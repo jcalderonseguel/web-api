@@ -22,7 +22,7 @@ namespace Bootstrap.Providers
                 return new SqlConnection(connectionString);
             });
 
-            services.AddDbContextPool<ClientDbContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("API")));
+            services.AddDbContextPool<ClientDbContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Persistance")));
             services.AddScoped<IUnitOfWork, ClientDbContextUnitOfWork>();
 
             services.AddScoped<IClientDbContext>(provider => provider.GetService<ClientDbContext>());
