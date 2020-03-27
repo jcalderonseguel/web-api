@@ -1,14 +1,17 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using API.Models;
 using API.Presenters.Interfaces;
+using Application.Mediators.PersonOperations.Get;
 using Application.Mediators.PersonOperations.GetAddressesByPerson;
 using Application.Mediators.PersonOperations.GetById;
-using Application.Mediators.PersonOperations.Get;
 using Application.Mediators.PersonOperations.Insert;
+using Application.Mediators.UserOperations.Create;
+using Application.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using Application.Queries;
 
 namespace API.Controllers
 {
@@ -17,7 +20,6 @@ namespace API.Controllers
     [ApiVersion("1")]
     [Route("v{v:apiVersion}/persons")]
     [ApiController]
-
     public class PersonController : BaseController
     {
         private readonly IMediator mediator;
@@ -106,13 +108,22 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Post([FromBody]InsertPersonRequest person) => personPresenter.InsertResult(await this.mediator.Send(person));
 
-        /* Esta mock para post de credit card in account service */
-        [HttpGet("exist/{personId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult ExsitPersonById(long personId)
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(UserCreatedDto), StatusCodes.Status201Created)]
+        [ProducesDefaultResponseType]
+        [HttpPost("createUser")]
+        public async Task<IActionResult> CreateUser([FromBody]CreateUserCommand userModel) => personPresenter.GetResult(await this.mediator.Send(userModel));
+
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public IActionResult Authenticate([FromBody]UserModel model)
         {
-            return new OkObjectResult(new { exist = true });
+            var user = model;
+
+            if (user == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(user);
         }
     }
 }

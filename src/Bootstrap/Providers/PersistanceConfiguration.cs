@@ -12,7 +12,7 @@ namespace Bootstrap.Providers
 {
     public static class PersistanceConfiguration
     {
-        public static IServiceCollection ConfigurePersistenceServices(this IServiceCollection services, IConfiguration configuration, bool addHealthCheck = true)
+        public static IServiceCollection ConfigurePersistenceServices(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("PersonsDB");
 
