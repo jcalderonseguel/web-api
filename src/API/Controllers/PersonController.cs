@@ -9,6 +9,8 @@ using Application.Mediators.PersonOperations.Insert;
 using System;
 using System.Threading.Tasks;
 using Application.Queries;
+using Microsoft.AspNetCore.Authorization;
+using API.Models;
 
 namespace API.Controllers
 {
@@ -17,7 +19,6 @@ namespace API.Controllers
     [ApiVersion("1")]
     [Route("v{v:apiVersion}/persons")]
     [ApiController]
-
     public class PersonController : BaseController
     {
         private readonly IMediator mediator;
@@ -106,13 +107,16 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Post([FromBody]InsertPersonRequest person) => personPresenter.InsertResult(await this.mediator.Send(person));
 
-        /* Esta mock para post de credit card in account service */
-        [HttpGet("exist/{personId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult ExsitPersonById(long personId)
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public IActionResult Authenticate([FromBody]UserModel model)
         {
-            return new OkObjectResult(new { exist = true });
+            var user = model;
+
+            if (user == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(user);
         }
     }
 }
