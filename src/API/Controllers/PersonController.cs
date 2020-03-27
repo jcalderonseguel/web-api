@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Application.Queries;
 using Microsoft.AspNetCore.Authorization;
 using API.Models;
+using Application.Mediators.UserOperations.Create;
 
 namespace API.Controllers
 {
@@ -106,6 +107,20 @@ namespace API.Controllers
         [ProducesResponseType(typeof(PersonCreatedDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Post([FromBody]InsertPersonRequest person) => personPresenter.InsertResult(await this.mediator.Send(person));
+
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesDefaultResponseType]
+        [HttpPost("createUser")]
+        public IActionResult Authenticate([FromBody]CreateUserCommand userModel)
+        {
+            var user = userModel;
+
+            if (user == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(user);
+        }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]

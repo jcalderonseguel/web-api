@@ -1,0 +1,66 @@
+﻿using Application.Common.Interfaces;
+using Application.Notifications;
+using Domain.Entities;
+using FluentValidation.Results;
+using Flunt.Notifications;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Application.Mediators.UserOperations.Create
+{
+    public class CreateUserCommand : Notifiable, IRequest<EntityResult<CreateUserDto>>
+    {
+        public string FullName { get; set; }
+        public string Password { get; set; }
+        public string Email { get; set; }
+
+        public class Handler : IRequestHandler<CreateUserCommand, EntityResult<CreateUserDto>>
+        {
+            private readonly IClientDbContext _context;
+
+            public Handler(IClientDbContext context)
+            {
+                _context = context;
+            }
+
+            public async Task<EntityResult<CreateUserDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+            {
+                UserValidator validator = new UserValidator();
+                ValidationResult result = await validator.ValidateAsync(request);
+
+                if (!result.IsValid)
+                {
+                    foreach (var item in result.Errors)
+                    {
+                        request.AddNotification(item.PropertyName, item.ErrorMessage);
+                    }
+
+                    return new EntityResult<CreateUserDto>(request.Notifications, result.Errors.All(err => err.ErrorCode == ErrorCode.NotFound.ToString()) ? ErrorCode.NotFound : ErrorCode.BadRequest);
+                }
+
+                var entity = new Users
+                {
+                    UserId = Guid.NewGuid(),
+                    FullName = request.FullName,
+                    Password = request.Password,
+                    Email = request.Email,
+                    Created = DateTime.Now
+                };
+
+                _context.Users.Add(entity);
+
+                await _context.SaveChangesAsync(cancellationToken);
+
+                return new EntityResult<CreateUserDto>(request.Notifications, new CreateUserDto
+                {
+                    UserId = entity.UserId
+                });
+            }
+        }
+    }
+}
