@@ -1,10 +1,24 @@
-﻿using System;
+﻿using Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Application.Common.Helpers
 {
-    public class CommonHelper
+    public static class CommonHelper
     {
+        public static IEnumerable<Users> WithoutPasswords(this IEnumerable<Users> users)
+        {
+            return users.Select(x => x.WithoutPassword());
+        }
+
+        public static Users WithoutPassword(this Users user)
+        {
+            user.Password = null;
+            return user;
+        }
+
         public static string GetEnumsToString(Type enumType)
         {
             var values = Enum.GetValues(enumType);

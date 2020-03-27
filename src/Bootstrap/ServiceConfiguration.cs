@@ -18,7 +18,8 @@ namespace Bootstrap
             services.ConfigureValidationsServices();
             services.AddApiVersion();
             services.AddVersionedApiExplorer();
-          
+            services.ConfigureAutentificationServices(configuration);
+
             services.AddPerson();
 
             return services;

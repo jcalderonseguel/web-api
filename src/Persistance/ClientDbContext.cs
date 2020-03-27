@@ -689,7 +689,6 @@ namespace Persistance
                   .IsUnicode(false);
 
                 entity.Property(e => e.Token)
-               .HasMaxLength(125)
                .IsUnicode(false);
 
                 entity.Property(e => e.FullName)
