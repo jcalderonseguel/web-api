@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistance.Migrations
 {
-    public partial class init : Migration
+    public partial class newMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -213,6 +213,24 @@ namespace Persistance.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TimeZones", x => x.TimeZoneId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(nullable: false),
+                    FullName = table.Column<string>(unicode: false, maxLength: 500, nullable: false),
+                    UserName = table.Column<string>(unicode: false, maxLength: 250, nullable: false),
+                    Password = table.Column<string>(unicode: false, maxLength: 125, nullable: false),
+                    Email = table.Column<string>(unicode: false, maxLength: 250, nullable: false),
+                    Token = table.Column<string>(unicode: false, maxLength: 125, nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId)
+                        .Annotation("SqlServer:Clustered", false);
                 });
 
             migrationBuilder.CreateTable(
@@ -800,6 +818,9 @@ namespace Persistance.Migrations
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "AddressesTypes");

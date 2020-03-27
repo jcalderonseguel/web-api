@@ -38,6 +38,8 @@ namespace Application.Common.Interfaces
         DbSet<StatusCodesAddresses> StatusCodesAddresses { get; set; }
         DbSet<TimeZones> TimeZones { get; set; }
 
+        DbSet<Users> Users { get; set; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

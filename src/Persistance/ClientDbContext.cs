@@ -678,6 +678,48 @@ namespace Persistance
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.HasKey(e => e.UserId)
+                    .IsClustered(false);
+             
+                entity.Property(e => e.Password)
+                  .IsRequired()
+                  .HasMaxLength(125)
+                  .IsUnicode(false);
+
+                entity.Property(e => e.FullName)
+                .IsRequired()
+                .HasMaxLength(500)
+                .IsUnicode(false);
+
+                entity.Property(e => e.Token)
+               .IsRequired()
+               .HasMaxLength(125)
+               .IsUnicode(false);
+
+                entity.Property(e => e.FullName)
+                .IsRequired()
+                .HasMaxLength(500)
+                .IsUnicode(false);
+
+                entity.Property(e => e.UserName)
+               .IsRequired()
+               .HasMaxLength(250)
+               .IsUnicode(false);
+
+                entity.Property(e => e.Email)
+              .IsRequired()
+              .HasMaxLength(250)
+              .IsUnicode(false);
+
+               entity.Property(e => e.Created).HasColumnType("datetime");
+
+
+
+
+            });
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ClientDbContext).Assembly);
         }
 
@@ -712,23 +754,10 @@ namespace Persistance
         public virtual DbSet<StatusCodesAddresses> StatusCodesAddresses { get; set; }
         public virtual DbSet<TimeZones> TimeZones { get; set; }
 
+        public virtual DbSet<Users> Users { get; set; }
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            //foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
-            //{
-            //    switch (entry.State)
-            //    {
-            //        case EntityState.Added:
-            //            entry.Entity.CreatedBy = _currentUserService.UserId;
-            //            entry.Entity.Created = _dateTime.Now;
-            //            break;
-            //        case EntityState.Modified:
-            //            entry.Entity.LastModifiedBy = _currentUserService.UserId;
-            //            entry.Entity.LastModified = _dateTime.Now;
-            //            break;
-            //    }
-            //}
-
             return base.SaveChangesAsync(cancellationToken);
         }
     }

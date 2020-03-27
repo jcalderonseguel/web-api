@@ -849,6 +849,51 @@ namespace Persistance.Migrations
                     b.ToTable("TimeZones");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Users", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("varchar(250)")
+                        .HasMaxLength(250)
+                        .IsUnicode(false);
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("varchar(500)")
+                        .HasMaxLength(500)
+                        .IsUnicode(false);
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("varchar(125)")
+                        .HasMaxLength(125)
+                        .IsUnicode(false);
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("varchar(125)")
+                        .HasMaxLength(125)
+                        .IsUnicode(false);
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("varchar(250)")
+                        .HasMaxLength(250)
+                        .IsUnicode(false);
+
+                    b.HasKey("UserId")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("Domain.Entities.Address", b =>
                 {
                     b.HasOne("Domain.Entities.AddressesTypes", "AddressTypeNavigation")
