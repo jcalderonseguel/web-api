@@ -30,7 +30,7 @@ namespace Application.Mediators.UserOperations.Create
 
             public async Task<EntityResult<UserCreatedDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
             {
-                UserValidator validator = new UserValidator();
+                UserValidator validator = new UserValidator(_context);
                 ValidationResult result = await validator.ValidateAsync(request);
 
                 if (!result.IsValid)

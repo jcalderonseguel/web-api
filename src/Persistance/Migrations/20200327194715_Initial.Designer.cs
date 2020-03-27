@@ -10,8 +10,8 @@ using Persistance;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(ClientDbContext))]
-    [Migration("20200327182558_removeUserName")]
-    partial class removeUserName
+    [Migration("20200327194715_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -885,6 +885,9 @@ namespace Persistance.Migrations
 
                     b.HasKey("UserId")
                         .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistance.Migrations
 {
-    public partial class newMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -220,11 +220,10 @@ namespace Persistance.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(nullable: false),
-                    FullName = table.Column<string>(unicode: false, maxLength: 500, nullable: false),
-                    UserName = table.Column<string>(unicode: false, maxLength: 250, nullable: false),
+                    FullName = table.Column<string>(maxLength: 500, nullable: false),
                     Password = table.Column<string>(unicode: false, maxLength: 125, nullable: false),
                     Email = table.Column<string>(unicode: false, maxLength: 250, nullable: false),
-                    Token = table.Column<string>(unicode: false, maxLength: 125, nullable: false),
+                    Token = table.Column<string>(unicode: false, maxLength: 125, nullable: true),
                     Created = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
@@ -791,6 +790,12 @@ namespace Persistance.Migrations
                 name: "IX_States_Region",
                 table: "States",
                 column: "Region");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
