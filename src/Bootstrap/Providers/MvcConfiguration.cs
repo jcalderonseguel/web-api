@@ -9,7 +9,6 @@ using System.Net;
 
 namespace Bootstrap.Providers
 {
-
     public static class MvcConfiguration
     {
         public static IServiceCollection ConfigureMVCServices(this IServiceCollection services)
@@ -18,6 +17,7 @@ namespace Bootstrap.Providers
 
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
+            services.AddCors();
             services.AddControllers();
             services.AddHealthChecks();
 
@@ -74,6 +74,15 @@ namespace Bootstrap.Providers
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

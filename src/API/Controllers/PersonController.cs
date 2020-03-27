@@ -6,15 +6,19 @@ using Application.Mediators.PersonOperations.GetById;
 using Application.Mediators.PersonOperations.Insert;
 using Application.Mediators.UserOperations.Create;
 using Application.Queries;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Persistance.Commands;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    [Authorize]
     [ApiConventionType(typeof(DefaultApiConventions))]
     [Produces("application/json")]
     [ApiVersion("1")]
@@ -25,10 +29,13 @@ namespace API.Controllers
         private readonly IMediator mediator;
         private readonly IPersonPresenter personPresenter;
 
-        public PersonController(IMediator mediator, IPersonPresenter personPresenter)
+        private readonly IUserService _userService;
+
+        public PersonController(IMediator mediator, IPersonPresenter personPresenter, IUserService userService)
         {
             this.mediator = mediator;
             this.personPresenter = personPresenter;
+            _userService = userService;
         }
 
         /// <summary>
@@ -115,15 +122,23 @@ namespace API.Controllers
         public async Task<IActionResult> CreateUser([FromBody]CreateUserCommand userModel) => personPresenter.GetResult(await this.mediator.Send(userModel));
 
         [AllowAnonymous]
-        [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]UserModel model)
+        [HttpPost("login")]
+        public IActionResult Login([FromBody]UserModel model)
         {
-            var user = model;
+            var user = _userService.Authenticate(model.Email, model.Password);
 
             if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new { message = "Email or password is incorrect" });
 
             return Ok(user);
+        }
+
+        [HttpGet("getUsers")]
+        [ProducesResponseType(typeof(PersonRelationDto), StatusCodes.Status200OK)]
+        public IActionResult GetAll()
+        {
+            var users = _userService.GetAll();
+            return Ok(users);
         }
     }
 }
