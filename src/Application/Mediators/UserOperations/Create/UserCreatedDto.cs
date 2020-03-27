@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Application.Mediators.UserOperations.Create
 {
-    public class CreateUserDto
+    public class UserCreatedDto
     {
         public Guid UserId { get; set; }
     }

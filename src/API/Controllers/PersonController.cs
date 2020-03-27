@@ -1,17 +1,17 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using API.Models;
 using API.Presenters.Interfaces;
+using Application.Mediators.PersonOperations.Get;
 using Application.Mediators.PersonOperations.GetAddressesByPerson;
 using Application.Mediators.PersonOperations.GetById;
-using Application.Mediators.PersonOperations.Get;
 using Application.Mediators.PersonOperations.Insert;
+using Application.Mediators.UserOperations.Create;
+using Application.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using Application.Queries;
-using Microsoft.AspNetCore.Authorization;
-using API.Models;
-using Application.Mediators.UserOperations.Create;
 
 namespace API.Controllers
 {
@@ -109,18 +109,10 @@ namespace API.Controllers
         public async Task<IActionResult> Post([FromBody]InsertPersonRequest person) => personPresenter.InsertResult(await this.mediator.Send(person));
 
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(UserCreatedDto), StatusCodes.Status201Created)]
         [ProducesDefaultResponseType]
         [HttpPost("createUser")]
-        public IActionResult Authenticate([FromBody]CreateUserCommand userModel)
-        {
-            var user = userModel;
-
-            if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-
-            return Ok(user);
-        }
+        public async Task<IActionResult> CreateUser([FromBody]CreateUserCommand userModel) => personPresenter.GetResult(await this.mediator.Send(userModel));
 
         [AllowAnonymous]
         [HttpPost("authenticate")]

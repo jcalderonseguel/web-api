@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace Application.Mediators.UserOperations.Create
 {
-    public class CreateUserCommand : Notifiable, IRequest<EntityResult<CreateUserDto>>
+    public class CreateUserCommand : Notifiable, IRequest<EntityResult<UserCreatedDto>>
     {
         public string FullName { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
 
-        public class Handler : IRequestHandler<CreateUserCommand, EntityResult<CreateUserDto>>
+        public class Handler : IRequestHandler<CreateUserCommand, EntityResult<UserCreatedDto>>
         {
             private readonly IClientDbContext _context;
 
@@ -28,7 +28,7 @@ namespace Application.Mediators.UserOperations.Create
                 _context = context;
             }
 
-            public async Task<EntityResult<CreateUserDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+            public async Task<EntityResult<UserCreatedDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
             {
                 UserValidator validator = new UserValidator();
                 ValidationResult result = await validator.ValidateAsync(request);
@@ -40,7 +40,7 @@ namespace Application.Mediators.UserOperations.Create
                         request.AddNotification(item.PropertyName, item.ErrorMessage);
                     }
 
-                    return new EntityResult<CreateUserDto>(request.Notifications, result.Errors.All(err => err.ErrorCode == ErrorCode.NotFound.ToString()) ? ErrorCode.NotFound : ErrorCode.BadRequest);
+                    return new EntityResult<UserCreatedDto>(request.Notifications, result.Errors.All(err => err.ErrorCode == ErrorCode.NotFound.ToString()) ? ErrorCode.NotFound : ErrorCode.BadRequest);
                 }
 
                 var entity = new Users
@@ -56,7 +56,7 @@ namespace Application.Mediators.UserOperations.Create
 
                 await _context.SaveChangesAsync(cancellationToken);
 
-                return new EntityResult<CreateUserDto>(request.Notifications, new CreateUserDto
+                return new EntityResult<UserCreatedDto>(request.Notifications, new UserCreatedDto
                 {
                     UserId = entity.UserId
                 });
