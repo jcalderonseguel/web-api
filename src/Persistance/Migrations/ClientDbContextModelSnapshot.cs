@@ -884,6 +884,9 @@ namespace Persistance.Migrations
                     b.HasKey("UserId")
                         .HasAnnotation("SqlServer:Clustered", false);
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 

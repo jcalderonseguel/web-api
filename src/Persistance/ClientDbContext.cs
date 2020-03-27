@@ -702,6 +702,8 @@ namespace Persistance
               .HasMaxLength(250)
               .IsUnicode(false);
 
+                entity.HasIndex(e => e.Email).IsUnique();
+
                 entity.Property(e => e.Created).HasColumnType("datetime");
             });
 
