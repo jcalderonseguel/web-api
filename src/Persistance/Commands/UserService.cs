@@ -74,13 +74,15 @@ namespace Persistance.Commands
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                    new Claim(ClaimTypes.Email, user.UserId.ToString())
+                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim(ClaimTypes.Name, user.FullName)
                     }),
                     Expires = DateTime.UtcNow.AddDays(_appSettings.TokenExpirationDays),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
                 };
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 user.Token = tokenHandler.WriteToken(token);
+                
                 // _context.Users.Update(user);
                 _context.SaveChangesAsync();
             }
